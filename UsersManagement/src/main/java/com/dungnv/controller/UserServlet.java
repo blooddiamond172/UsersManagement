@@ -59,10 +59,9 @@ public class UserServlet extends HttpServlet{
 	private void deleteUserInList(HttpServletRequest req, HttpServletResponse resp) {
 		int id = Integer.parseInt(req.getParameter("id"));
 		userDAO.deleteUser(id);
-		RequestDispatcher requestDispatcher = req.getRequestDispatcher("list");
 		try {
-			requestDispatcher.forward(req, resp);
-		} catch (ServletException | IOException e) {
+			resp.sendRedirect("list");
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -74,10 +73,9 @@ public class UserServlet extends HttpServlet{
 		String country = req.getParameter("country");
 		User user = new User(id,name,email,country);
 		userDAO.updateUser(user);
-		RequestDispatcher requestDispatcher = req.getRequestDispatcher("list");
 		try {
-			requestDispatcher.forward(req, resp);
-		} catch (ServletException | IOException e) {
+			resp.sendRedirect("list");
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -101,13 +99,11 @@ public class UserServlet extends HttpServlet{
 		String country = req.getParameter("country");
 		User user = new User(name,email,country);
 		userDAO.insertUser(user);
-		RequestDispatcher requestDispatcher = req.getRequestDispatcher("list");
 		try {
-			requestDispatcher.forward(req, resp);
-		} catch (ServletException | IOException e) {
+			resp.sendRedirect("list");
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 	}
 
 	private void showNewForm(HttpServletRequest req, HttpServletResponse resp) {
@@ -122,7 +118,8 @@ public class UserServlet extends HttpServlet{
 
 	private void usersList(HttpServletRequest req, HttpServletResponse resp) {
 		List<User> users = userDAO.selectAllUsers();
-		req.setAttribute("users", users);
+		HttpSession httpSession = req.getSession();
+		httpSession.setAttribute("users", users);
 		RequestDispatcher requestDispatcher = req.getRequestDispatcher("UserList.jsp");
 		try {
 			requestDispatcher.forward(req, resp);
